@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">NautaCloud</string>
+    <string name="app_name" translatable="false">NautaCloud</string>
+    <string name="connect_to_wifi_network">Connect to a Wi-Fi network</string>
 </resources>

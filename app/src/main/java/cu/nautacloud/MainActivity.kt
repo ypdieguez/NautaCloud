@@ -3,11 +3,13 @@ package cu.nautacloud
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.net.NetworkInfo
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.PowerManager
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.github.pwittchen.reactivenetwork.library.rx2.internet.observing.InternetObservingSettings
 import com.google.android.material.snackbar.Snackbar
@@ -53,12 +55,22 @@ class MainActivity : AppCompatActivity() {
             fab.setOnClickListener {
                 if (internetDisposable == null || internetDisposable!!.isDisposed) {
                     observeInternetConnectivity()
-                    fab.setImageDrawable(getDrawable(R.drawable.cloud_search))
+                    fab.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            this@MainActivity,
+                            R.drawable.cloud_search
+                        )
+                    )
                 } else {
                     setAnimation("cloud_help")
                     internetDisposable?.dispose()
                     stopRingtone()
-                    fab.setImageDrawable(getDrawable(R.drawable.cloud_search_outline))
+                    fab.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            this@MainActivity,
+                            R.drawable.cloud_search_outline
+                        )
+                    )
                 }
             }
         }
@@ -89,13 +101,18 @@ class MainActivity : AppCompatActivity() {
                     binding.fab.visibility = View.GONE
                     snackbar = Snackbar.make(
                         binding.root,
-                        "Conéctate a una red Wi-Fi",
+                        getString(R.string.connect_to_wifi_network),
                         Snackbar.LENGTH_INDEFINITE
                     )
                     snackbar?.show()
                     internetDisposable?.dispose()
                     stopRingtone()
-                    binding.fab.setImageDrawable(getDrawable(R.drawable.cloud_search_outline))
+                    binding.fab.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            this,
+                            R.drawable.cloud_search_outline
+                        )
+                    )
                 }
             }
     }
@@ -104,8 +121,8 @@ class MainActivity : AppCompatActivity() {
         internetDisposable = ReactiveNetwork
             .observeInternetConnectivity(
                 InternetObservingSettings.builder()
-                    .interval(60000)
-                    .timeout(10000)
+                    .interval(30_000)
+                    .timeout(10_000)
                     .build()
             )
             .subscribeOn(Schedulers.io())
